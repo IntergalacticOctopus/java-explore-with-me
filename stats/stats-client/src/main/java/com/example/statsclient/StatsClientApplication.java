@@ -1,0 +1,13 @@
+package com.example.statsclient;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class StatsClientApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(StatsClientApplication.class, args);
+    }
+
+}

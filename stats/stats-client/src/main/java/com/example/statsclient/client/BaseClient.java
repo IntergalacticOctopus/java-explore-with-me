@@ -1,4 +1,5 @@
 package com.example.statsclient.client;
+
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -10,9 +11,11 @@ import java.util.Map;
 
 public class BaseClient {
     protected final RestTemplate rest;
+
     public BaseClient(RestTemplate rest) {
         this.rest = rest;
     }
+
     protected ResponseEntity<Object> get(String path, @Nullable Map<String, Object> parameters) {
         return makeAndSendRequest(HttpMethod.GET, path, parameters, null);
     }

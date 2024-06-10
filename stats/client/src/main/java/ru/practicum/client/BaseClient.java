@@ -1,4 +1,4 @@
-package com.example.statsclient.client;
+package ru.practicum.client;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;

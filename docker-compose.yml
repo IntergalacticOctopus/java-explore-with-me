@@ -1,7 +1,7 @@
 version: '3.1'
 services:
   server:
-    build: ./server
+    build: stats/stats-server
     container_name: server
     ports:
       - "9090:9090"
@@ -22,3 +22,27 @@ services:
       POSTGRES_USER: user
       POSTGRES_DB: stats
 
+
+  main:
+    build: main
+    image: main-image
+    container_name: main-container
+    ports:
+      - "8080:8080"
+    depends_on:
+      - main-db
+      - server
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://main-db:5432/main
+      - SPRING_DATASOURCE_USERNAME=admin_main
+      - SPRING_DATASOURCE_PASSWORD=I0N0UbB0zQL3KUHAgOMsoUdAFGt4pJ1
+
+  main-db:
+    image: postgres:13.7-alpine
+    container_name: main-db-container
+    ports:
+      - "6542:5432"
+    environment:
+      - POSTGRES_DB=main
+      - POSTGRES_USER=admin_main
+      - POSTGRES_PASSWORD=I0N0UbB0zQL3KUHAgOMsoUdAFGt4pJ1

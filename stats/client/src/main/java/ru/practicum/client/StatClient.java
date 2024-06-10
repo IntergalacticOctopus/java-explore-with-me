@@ -1,4 +1,4 @@
-package com.example.statsclient.client;
+package ru.practicum.client;
 
 
 import org.springframework.beans.factory.annotation.Autowired;

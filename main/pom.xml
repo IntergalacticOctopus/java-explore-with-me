@@ -11,6 +11,7 @@
     <artifactId>main</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>main</name>
+    <packaging>pom</packaging>
     <description>main</description>
     <properties>
         <maven.compiler.source>11</maven.compiler.source>

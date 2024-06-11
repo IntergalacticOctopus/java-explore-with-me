@@ -1,14 +1,15 @@
 version: '3.1'
 services:
   stats-server:
-    build: stats/stats-server
     container_name: stats-server
+    build: stats/stats-server
+    image: stats/stats-server
     ports:
       - "9090:9090"
     depends_on:
       - stats-db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/stats
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:6541/stats
       - SPRING_DATASOURCE_USERNAME=user
       - SPRING_DATASOURCE_PASSWORD=pass
 
@@ -44,5 +45,5 @@ services:
       - "6542:5432"
     environment:
       - POSTGRES_DB=main
-      - POSTGRES_USER=test
-      - POSTGRES_PASSWORD=test
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=pass

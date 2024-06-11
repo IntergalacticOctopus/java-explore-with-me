@@ -15,6 +15,7 @@
 
 	<modules>
 		<module>stats</module>
+		<module>main</module>
 	</modules>
 
 	<dependencies>

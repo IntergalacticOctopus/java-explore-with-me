@@ -3,76 +3,53 @@ package ru.practicum.client;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.util.DefaultUriBuilderFactory;
+
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import ru.practicum.HitDto;
-import ru.practicum.StatDto;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
-@Component
 @Slf4j
-public class StatClient {
+@Component
+public class StatClient extends BaseClient {
+    private static final String START = "start";
+    private static final String END = "end";
 
     @Autowired
-    public StatClient(@Value("${stat-server.url}") String serverUrl) {
-        this.restTemplate = new RestTemplate();
-        this.serverUrl = serverUrl;
-    }
-
-    private final RestTemplate restTemplate;
-    private final String serverUrl;
-
-    public void saveHit(HitDto hitDto) {
-        try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            HttpEntity<HitDto> entity = new HttpEntity<>(hitDto, headers);
-            ResponseEntity<Void> response = restTemplate.postForEntity(serverUrl + "/hit", entity, Void.class);
-            if (!response.getStatusCode().is2xxSuccessful()) {
-                log.info("Failed to save hit: " + response.getStatusCode());
-            }
-        } catch (Exception e) {
-            String stacktrace = ExceptionUtils.getStackTrace(e);
-            String errorMessage = "Error saving hit: " + e.getMessage() + stacktrace;
-            log.info(errorMessage);
-        }
-    }
-
-    public List<StatDto> getStats(LocalDateTime start, LocalDateTime end, Boolean unique, List<String> uris) {
-        Map<String, Object> parameters = Map.of(
-                "start", start,
-                "end", end,
-                "unique", unique,
-                "uris", uris
+    public StatClient(@Value("${stats-server.url}") String serverUrl, RestTemplateBuilder builder) {
+        super(
+                builder
+                        .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl))
+                        .requestFactory(HttpComponentsClientHttpRequestFactory::new)
+                        .build()
         );
+    }
 
-        try {
-            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(serverUrl + "/stats")
-                    .queryParam("start", start)
-                    .queryParam("end", end)
-                    .queryParam("unique", unique)
-                    .queryParam("uris", String.join(",", uris));
+    public ResponseEntity<Object> saveHit(HitDto endpointHitDto) {
+        return post("/hit", endpointHitDto);
+    }
 
-            ResponseEntity<List<StatDto>> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, null, new ParameterizedTypeReference<List<StatDto>>() {
-            });
-            if (!response.getStatusCode().is2xxSuccessful()) {
-                log.info("Failed to get stats: " + response.getStatusCode());
-                return Collections.emptyList();
-            }
-            return response.getBody();
-        } catch (Exception e) {
-            String stacktrace = ExceptionUtils.getStackTrace(e);
-            String errorMessage = "Error getting stats: " + e.getMessage() + stacktrace;
-            log.info(errorMessage);
-            return Collections.emptyList();
+    public ResponseEntity<Object> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+        final String stringStart = start.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        final String stringEnd = end.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        final Map<String, Object> parameters = Map.of(
+                START, stringStart,
+                END, stringEnd
+        );
+        final StringJoiner pathBuilder = new StringJoiner("&", "/stats?start={start}&end={end}", "");
+        if (!uris.isEmpty()) {
+            uris.forEach(uri -> pathBuilder.add("&uris=" + uri));
         }
+        if (Objects.nonNull(unique)) {
+            pathBuilder.add("&unique=" + unique);
+        }
+        final String path = pathBuilder.toString();
+        return makeAndSendRequest(HttpMethod.GET, path, null, parameters, null);
     }
 }

@@ -1,14 +1,16 @@
 package com.example.statsserver.service;
 
+import org.springframework.stereotype.Service;
 import ru.practicum.HitDto;
 import ru.practicum.StatDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Service
 public interface StatService {
 
-    void saveHit(HitDto hitDtoRequest);
+    HitDto saveHit(HitDto hitDto);
 
-    List<StatDto> getStatInfo(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique);
+    List<StatDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique);
 }

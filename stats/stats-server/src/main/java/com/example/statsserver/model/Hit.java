@@ -1,36 +1,29 @@
 package com.example.statsserver.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Entity
 @Getter
 @Setter
-@ToString
-@Builder
-@NoArgsConstructor
+@Table(name = "hits")
+@RequiredArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "stats")
+@ToString
+@EqualsAndHashCode
+@Builder
 public class Hit {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "app", nullable = false)
     private String app;
 
-    @Column(name = "uri", nullable = false)
     private String uri;
 
-    @Column(name = "ip_address", nullable = false)
-    private String ipAddress;
+    private String ip_address;
 
-    @Column(name = "hit_date", nullable = false)
-    @JsonFormat
-    private LocalDateTime hitDate;
+    private LocalDateTime timestamp;
 }

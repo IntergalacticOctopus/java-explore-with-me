@@ -1,28 +1,41 @@
 package com.example.statsserver.repository;
 
 import com.example.statsserver.model.Hit;
-import com.example.statsserver.model.Stat;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+import ru.practicum.StatDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Repository
 public interface StatRepository extends JpaRepository<Hit, Long> {
+    @Query("select new ru.practicum.StatDto(h.app, h.uri, count(h.ip_address)) " +
+            "from Hit as h " +
+            "where h.timestamp between ?1 and ?2 and h.uri IN ?3 " +
+            "group by h.app, h.uri  " +
+            "order by count (h.ip_address) desc ")
+    List<StatDto> getStat(LocalDateTime start, LocalDateTime end, List<String> uris);
 
-    @Query("SELECT new com.example.statsserver.model.Stat(h.app, h.uri, count(h.ipAddress)) " +
-            "FROM Hit AS h WHERE h.hitDate " +
-            "BETWEEN :start AND :end AND (COALESCE(:uris, null) IS NULL OR h.uri IN :uris) " +
-            "GROUP BY h.app, h.uri ORDER BY COUNT(h.ipAddress) DESC")
-    List<Stat> getStats(@Param("start") LocalDateTime start,
-                        @Param("end") LocalDateTime end,
-                        @Param("uris") List<String> uris);
+    @Query("select new ru.practicum.StatDto(h.app, h.uri, count(distinct h.ip_address)) " +
+            "from Hit as h " +
+            "where h.timestamp between ?1 and ?2 and h.uri IN ?3 " +
+            "group by h.app, h.uri  " +
+            "order by count (distinct h.ip_address) desc ")
+    List<StatDto> getStatUniqueIp(LocalDateTime start, LocalDateTime end, List<String> uris);
 
-    @Query("SELECT new com.example.statsserver.model.Stat(h.app, h.uri, count(DISTINCT h.ipAddress)) " +
-            "FROM Hit AS h WHERE h.hitDate BETWEEN :start AND :end AND (:uris IS NULL OR h.uri IN :uris) " +
-            "GROUP BY h.app, h.uri ORDER BY COUNT(DISTINCT h.ipAddress) DESC")
-    List<Stat> getUniqueStats(@Param("start") LocalDateTime start,
-                              @Param("end") LocalDateTime end,
-                              @Param("uris") List<String> uris);
+    @Query("select new ru.practicum.StatDto(h.app, h.uri, count (h)) " +
+            "from Hit as h " +
+            "where h.timestamp between ?1 and ?2 " +
+            "group by h.app, h.uri " +
+            "order by count (h) desc ")
+    List<StatDto> getStatNoUris(LocalDateTime start, LocalDateTime end);
+
+    @Query("select new ru.practicum.StatDto(h.app, h.uri, count (distinct h.ip_address)) " +
+            "from Hit as h " +
+            "where h.timestamp between ?1 and ?2 " +
+            "group by h.app, h.uri " +
+            "order by count (distinct h.ip_address) desc ")
+    List<StatDto> getStatNoUrisUniqueIp(LocalDateTime start, LocalDateTime end);
 }

@@ -1,8 +1,0 @@
-com\example\statsserver\repository\StatRepository.class
-com\example\statsserver\StatsServerApplication.class
-com\example\statsserver\controller\StatController.class
-com\example\statsserver\model\Hit.class
-com\example\statsserver\mapper\Mapper.class
-com\example\statsserver\service\StatService.class
-com\example\statsserver\service\StatServiceImpl.class
-com\example\statsserver\model\Hit$HitBuilder.class

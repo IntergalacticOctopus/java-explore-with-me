@@ -14,7 +14,6 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor(force = true)
 public class CategoryDto {
     private int id;
-
     @NotBlank
     @Length(min = 1, max = 50, message = "Invalid lenght")
     private String name;

@@ -11,18 +11,18 @@ import java.util.List;
 
 @Repository
 public interface StatRepository extends JpaRepository<Hit, Long> {
-    @Query("select new ru.practicum.StatDto(h.app, h.uri, count(h.ip_address)) " +
+    @Query("select new ru.practicum.StatDto(h.app, h.uri, count(h.ip)) " +
             "from Hit as h " +
             "where h.timestamp between ?1 and ?2 and h.uri IN ?3 " +
             "group by h.app, h.uri  " +
-            "order by count (h.ip_address) desc ")
+            "order by count (h.ip) desc ")
     List<StatDto> getStat(LocalDateTime start, LocalDateTime end, List<String> uris);
 
-    @Query("select new ru.practicum.StatDto(h.app, h.uri, count(distinct h.ip_address)) " +
+    @Query("select new ru.practicum.StatDto(h.app, h.uri, count(distinct h.ip)) " +
             "from Hit as h " +
             "where h.timestamp between ?1 and ?2 and h.uri IN ?3 " +
             "group by h.app, h.uri  " +
-            "order by count (distinct h.ip_address) desc ")
+            "order by count (distinct h.ip) desc ")
     List<StatDto> getStatUniqueIp(LocalDateTime start, LocalDateTime end, List<String> uris);
 
     @Query("select new ru.practicum.StatDto(h.app, h.uri, count (h)) " +
@@ -32,10 +32,10 @@ public interface StatRepository extends JpaRepository<Hit, Long> {
             "order by count (h) desc ")
     List<StatDto> getStatNoUris(LocalDateTime start, LocalDateTime end);
 
-    @Query("select new ru.practicum.StatDto(h.app, h.uri, count (distinct h.ip_address)) " +
+    @Query("select new ru.practicum.StatDto(h.app, h.uri, count (distinct h.ip)) " +
             "from Hit as h " +
             "where h.timestamp between ?1 and ?2 " +
             "group by h.app, h.uri " +
-            "order by count (distinct h.ip_address) desc ")
+            "order by count (distinct h.ip) desc ")
     List<StatDto> getStatNoUrisUniqueIp(LocalDateTime start, LocalDateTime end);
 }

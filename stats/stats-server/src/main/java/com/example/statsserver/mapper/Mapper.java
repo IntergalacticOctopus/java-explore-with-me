@@ -21,7 +21,7 @@ public class Mapper {
                 .id(hit.getId())
                 .app(hit.getApp())
                 .uri(hit.getUri())
-                .ip(hit.getIpAddress())
+                .ip(hit.getIp())
                 .timestamp(hit.getTimestamp().format(FORMATTER))
                 .build();
     }
@@ -31,7 +31,7 @@ public class Mapper {
                 .id(hitDto.getId())
                 .app(hitDto.getApp())
                 .uri(hitDto.getUri())
-                .ipAddress(hitDto.getIp())
+                .ip(hitDto.getIp())
                 .timestamp(LocalDateTime.parse(hitDto.getTimestamp(), FORMATTER))
                 .build();
     }

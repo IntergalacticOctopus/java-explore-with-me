@@ -22,8 +22,7 @@ public class Hit {
     private String app;
 
     private String uri;
-    @Column(name = "ip_address")
-    private String ipAddress;
+    private String ip;
 
     private LocalDateTime timestamp;
 }

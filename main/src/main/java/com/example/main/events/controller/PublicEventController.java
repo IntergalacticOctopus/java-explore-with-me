@@ -2,7 +2,7 @@ package com.example.main.events.controller;
 
 import com.example.main.events.dto.EventFullDto;
 import com.example.main.events.dto.EventShortDto;
-import com.example.main.events.service.PublicEventService;
+import com.example.main.events.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -28,8 +28,8 @@ import java.util.List;
 @Validated
 @ComponentScan(basePackages = {"ru.practicum.StatClient"})
 public class PublicEventController {
-    private final PublicEventService publicEventService;
     private final StatClient statClient;
+    private final EventService eventService;
 
     @GetMapping
     public List<EventShortDto> getEvents(@RequestParam(defaultValue = "") String text,
@@ -48,7 +48,7 @@ public class PublicEventController {
                 .ip(request.getRemoteAddr())
                 .timestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))).build();
         statClient.saveHit(endpointHitDto);
-        return publicEventService.getEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
+        return eventService.getEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
     }
 
     @GetMapping("/{id}")
@@ -60,6 +60,6 @@ public class PublicEventController {
                 .ip(request.getRemoteAddr())
                 .timestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))).build();
         statClient.saveHit(hitDto);
-        return publicEventService.getEventById(id);
+        return eventService.getEventById(id);
     }
 }

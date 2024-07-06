@@ -7,13 +7,14 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class UpdateCompilationRequest {
-    private List<Integer> events;
+    private Set<Integer> events;
 
     private Boolean pinned;
 

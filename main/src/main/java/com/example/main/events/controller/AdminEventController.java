@@ -3,7 +3,7 @@ package com.example.main.events.controller;
 
 import com.example.main.events.dto.EventFullDto;
 import com.example.main.events.dto.UpdateEventAdminRequest;
-import com.example.main.events.service.AdminEventService;
+import com.example.main.events.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
@@ -26,12 +26,12 @@ import java.util.List;
 @RequestMapping("/admin/events")
 @Validated
 public class AdminEventController {
-    private final AdminEventService adminEventService;
+    private final EventService eventService;
 
     @PatchMapping("/{eventId}")
     public EventFullDto patch(@RequestBody @Valid UpdateEventAdminRequest updateEventAdminRequest,
                               @PathVariable @PositiveOrZero int eventId) {
-        return adminEventService.patchEvent(updateEventAdminRequest, eventId);
+        return eventService.patchEvent(updateEventAdminRequest, eventId);
     }
 
     @GetMapping
@@ -42,6 +42,6 @@ public class AdminEventController {
                                   @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
                                   @RequestParam(defaultValue = "0") @PositiveOrZero int from,
                                   @RequestParam(defaultValue = "10") @Positive int size) {
-        return adminEventService.getEvents(users, states, categories, rangeStart, rangeEnd, from, size);
+        return eventService.getEvents(users, states, categories, rangeStart, rangeEnd, from, size);
     }
 }

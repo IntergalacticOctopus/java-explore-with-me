@@ -5,7 +5,7 @@ import com.example.main.user.dto.UserDto;
 
 import java.util.List;
 
-public interface AdminUserService {
+public interface UserService {
     UserDto postUser(NewUserRequest newUserRequest);
 
     void deleteUser(int userId);

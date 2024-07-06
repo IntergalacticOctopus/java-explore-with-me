@@ -3,7 +3,7 @@ package com.example.main.compilation.controller;
 import com.example.main.compilation.dto.CompilationDto;
 import com.example.main.compilation.dto.NewCompilationDto;
 import com.example.main.compilation.dto.UpdateCompilationRequest;
-import com.example.main.compilation.service.AdminCompilationService;
+import com.example.main.compilation.service.CompilationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -17,23 +17,23 @@ import javax.validation.constraints.PositiveOrZero;
 @RequestMapping("/admin/compilations")
 @Validated
 public class AdminCompilationController {
-    private final AdminCompilationService adminCompilationService;
+    private final CompilationService compilationService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CompilationDto post(@RequestBody @Valid NewCompilationDto newCompilationDto) {
-        return adminCompilationService.postCompilation(newCompilationDto);
+        return compilationService.postCompilation(newCompilationDto);
     }
 
     @DeleteMapping("/{compId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable @PositiveOrZero int compId) {
-        adminCompilationService.deleteCompilation(compId);
+        compilationService.deleteCompilation(compId);
     }
 
     @PatchMapping("/{compId}")
     public CompilationDto patch(@RequestBody @Valid UpdateCompilationRequest updateCompilationRequest,
                                 @PathVariable @PositiveOrZero int compId) {
-        return adminCompilationService.patchCompilation(updateCompilationRequest, compId);
+        return compilationService.patchCompilation(updateCompilationRequest, compId);
     }
 }

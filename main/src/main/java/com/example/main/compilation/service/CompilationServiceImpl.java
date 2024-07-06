@@ -17,22 +17,48 @@ import com.example.main.exception.model.EntityNotFoundException;
 import com.example.main.request.model.RequestStatus;
 import com.example.main.request.repository.RequestRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class AdminCompilationServiceImpl implements AdminCompilationService {
+public class CompilationServiceImpl implements CompilationService {
     private final EventRepository eventRepository;
     private final RequestRepository requestRepository;
     private final CompilationRepository compilationRepository;
     private final EventCompilationConnectionRepository eventCompilationConnectionRepository;
     private final CompilationMapper compilationMapper;
     private final EventMapper eventMapper;
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CompilationDto> getCompilation(boolean pinned, int from, int size) {
+        final PageRequest pageRequest = PageRequest.of(from > 0 ? from / size : 0, size);
+        if (pinned) {
+            return compilationRepository.getAllByPinned(true, pageRequest).getContent().stream()
+                    .map(event -> compilationMapper.toCompilation(event, requestRepository))
+                    .collect(Collectors.toList());
+        }
+        return compilationRepository.findAll(pageRequest).getContent().stream()
+                .map(event -> compilationMapper.toCompilation(event, requestRepository))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public CompilationDto getCompilationById(int compilationId) {
+        final Compilation compilation = compilationRepository.findById(compilationId)
+                .orElseThrow(
+                        () -> new EntityNotFoundException("Data not found")
+                );
+        return compilationMapper.toCompilation(compilation, requestRepository);
+    }
 
     @Override
     @Transactional
@@ -90,10 +116,10 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
         }
         if (updateCompilationRequest.getEvents() != null) {
             if (updateCompilationRequest.getEvents().isEmpty()) {
-                compilationFromDb.setEvents(new ArrayList<>());
+                compilationFromDb.setEvents(new HashSet<>());
             } else {
-                compilationFromDb.setEvents(
-                        eventRepository.findAllById(new ArrayList<>(updateCompilationRequest.getEvents()))
+                compilationFromDb.setEvents(new HashSet<>(
+                        eventRepository.findAllById(updateCompilationRequest.getEvents()))
                 );
             }
         }

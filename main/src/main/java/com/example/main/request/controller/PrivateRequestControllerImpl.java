@@ -1,7 +1,7 @@
 package com.example.main.request.controller;
 
 import com.example.main.request.dto.ParticipationRequestDto;
-import com.example.main.request.service.PrivateRequestService;
+import com.example.main.request.service.RequestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -22,23 +22,23 @@ import java.util.List;
 @RequiredArgsConstructor
 @Validated
 public class PrivateRequestControllerImpl {
-    private final PrivateRequestService privateRequestService;
+    private final RequestService requestService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ParticipationRequestDto post(@PathVariable @PositiveOrZero int userId,
                                         @RequestParam @PositiveOrZero int eventId) {
-        return privateRequestService.postRequest(userId, eventId);
+        return requestService.postRequest(userId, eventId);
     }
 
     @GetMapping
     public List<ParticipationRequestDto> get(@PathVariable @PositiveOrZero int userId) {
-        return privateRequestService.getRequests(userId);
+        return requestService.getRequests(userId);
     }
 
     @PatchMapping("/{requestId}/cancel")
     public ParticipationRequestDto patch(@PathVariable @PositiveOrZero int userId,
                                          @PathVariable @PositiveOrZero int requestId) {
-        return privateRequestService.cancelRequest(userId, requestId);
+        return requestService.cancelRequest(userId, requestId);
     }
 }

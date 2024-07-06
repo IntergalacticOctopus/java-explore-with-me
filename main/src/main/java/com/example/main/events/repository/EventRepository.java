@@ -101,4 +101,5 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
     Optional<Event> getByIdAndState(int eventId, EventState state);
 
     Page<Event> getByInitiatorId(int initiatorId, Pageable page);
+    boolean existsByCategory(Integer categoryIds);
 }

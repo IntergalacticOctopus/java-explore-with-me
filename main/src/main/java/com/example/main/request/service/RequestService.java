@@ -5,7 +5,7 @@ import com.example.main.request.dto.ParticipationRequestDto;
 
 import java.util.List;
 
-public interface PrivateRequestService {
+public interface RequestService {
     ParticipationRequestDto postRequest(int userId, int eventId);
 
     List<ParticipationRequestDto> getRequests(int userId);

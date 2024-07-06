@@ -2,7 +2,7 @@ package com.example.main.user.controller;
 
 import com.example.main.user.dto.NewUserRequest;
 import com.example.main.user.dto.UserDto;
-import com.example.main.user.service.AdminUserService;
+import com.example.main.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -26,24 +26,24 @@ import java.util.List;
 @RequestMapping("/admin/users")
 @Validated
 public class AdminUserControllerImpl {
-    private final AdminUserService adminUserService;
+    private final UserService userService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto post(@RequestBody @Valid NewUserRequest newUserRequest) {
-        return adminUserService.postUser(newUserRequest);
+        return userService.postUser(newUserRequest);
     }
 
     @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable @PositiveOrZero int userId) {
-        adminUserService.deleteUser(userId);
+        userService.deleteUser(userId);
     }
 
     @GetMapping
     public List<UserDto> getAll(@RequestParam(defaultValue = "") List<Integer> ids,
                                 @RequestParam(defaultValue = "0") @PositiveOrZero int from,
                                 @RequestParam(defaultValue = "10") @Positive int size) {
-        return adminUserService.getAllUsers(ids, from, size);
+        return userService.getAllUsers(ids, from, size);
     }
 }

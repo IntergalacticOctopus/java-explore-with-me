@@ -2,7 +2,7 @@ package com.example.main.category.controller;
 
 import com.example.main.category.dto.CategoryDto;
 import com.example.main.category.dto.NewCategoryDto;
-import com.example.main.category.service.AdminCategoryService;
+import com.example.main.category.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -23,23 +23,23 @@ import javax.validation.constraints.PositiveOrZero;
 @RequestMapping("/admin/categories")
 @Validated
 public class AdminCategoryController {
-    private final AdminCategoryService adminCategoryService;
+    private final CategoryService categoryService;
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public CategoryDto post(@RequestBody @Valid NewCategoryDto newCategoryDto) {
-        return adminCategoryService.post(newCategoryDto);
+        return categoryService.post(newCategoryDto);
     }
 
     @DeleteMapping("/{catId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable @PositiveOrZero int catId) {
-        adminCategoryService.delete(catId);
+        categoryService.delete(catId);
     }
 
     @PatchMapping("/{catId}")
     public CategoryDto patch(@RequestBody @Valid CategoryDto categoryDto,
                              @PathVariable @PositiveOrZero int catId) {
-        return adminCategoryService.patch(categoryDto, catId);
+        return categoryService.patch(categoryDto, catId);
     }
 }

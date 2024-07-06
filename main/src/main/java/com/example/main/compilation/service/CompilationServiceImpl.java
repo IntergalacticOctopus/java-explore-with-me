@@ -10,7 +10,6 @@ import com.example.main.events.dto.EventShortDto;
 import com.example.main.events.mapper.EventMapper;
 import com.example.main.events.model.Event;
 import com.example.main.events.repository.EventRepository;
-import com.example.main.exception.errors.DataConflictException;
 import com.example.main.exception.errors.NotFoundException;
 import com.example.main.request.model.RequestStatus;
 import com.example.main.request.repository.RequestRepository;
@@ -59,11 +58,6 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     @Transactional
     public CompilationDto postCompilation(NewCompilationDto compilationDto) {
-
-
-        if (compilationRepository.existsByTitle(compilationDto.getTitle())) {
-            throw new DataConflictException("Data not found");
-        }
 
         Set<Event> events = new HashSet<>();
         if (compilationDto.getEvents() != null) {

@@ -21,14 +21,10 @@ import java.util.stream.Collectors;
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
-    private final EventRepository eventRepository;
 
     @Override
     @Transactional
     public CategoryDto post(NewCategoryDto newCategoryDto) {
-        if (categoryRepository.existsByName(newCategoryDto.getName())) {
-            throw new DataConflictException("Category name already exist");
-        }
         final Category category = categoryMapper.toCategory(newCategoryDto);
         return categoryMapper.toCategoryDto(categoryRepository.save(category));
     }

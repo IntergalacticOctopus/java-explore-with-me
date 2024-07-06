@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 public class CompilationMapper {
     private final EventMapper eventMapper;
     private final EventRepository eventRepository;
+
     public Compilation toCompilation(NewCompilationDto newCompilationDto) {
         return Compilation.builder()
                 .title(newCompilationDto.getTitle())

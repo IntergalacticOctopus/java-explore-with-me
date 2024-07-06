@@ -5,6 +5,7 @@ import com.example.main.category.repository.CategoryRepository;
 import com.example.main.events.dto.EventFullDto;
 import com.example.main.events.dto.EventShortDto;
 import com.example.main.events.dto.UpdateEventAdminRequest;
+import com.example.main.events.enums.SortConflict;
 import com.example.main.events.mapper.EventMapper;
 import com.example.main.events.model.Event;
 import com.example.main.events.model.EventState;
@@ -53,9 +54,6 @@ public class EventServiceImpl implements EventService {
             PageRequest page) {
         if (text.isBlank()) {
             text = "";
-        }
-        if (!sort.equalsIgnoreCase("EVENT_DATE") && !sort.equalsIgnoreCase("VIEWS")) {
-            throw new InvalidRequestException("Invalid sorting");
         }
         if (rangeStart == null && rangeEnd == null) {
             rangeStart = LocalDateTime.now();
@@ -113,9 +111,9 @@ public class EventServiceImpl implements EventService {
                         () -> new EntityNotFoundException("Data not found")
                 );
         final List<String> uris = List.of("/events/" + id);
-        final ResponseEntity<Object> responseEntity = statClient.getStats(
-                LocalDateTime.now().minusYears(1000),
-                LocalDateTime.now().plusYears(1000),
+        final ResponseEntity<Object> responseEntity = (ResponseEntity<Object>) statClient.getStats(
+                LocalDateTime.now(),
+                LocalDateTime.now(),
                 uris,
                 true
         );
@@ -167,10 +165,6 @@ public class EventServiceImpl implements EventService {
             }
         }
         if (updateEventAdminRequest.getEventDate() != null) {
-            if (LocalDateTime.parse(updateEventAdminRequest.getEventDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-                    .isBefore(LocalDateTime.now().plusHours(1))) {
-                throw new InvalidRequestException("Invalid data");
-            }
             eventFromDb.setEventDate(LocalDateTime.parse(updateEventAdminRequest.getEventDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         }
         if (updateEventAdminRequest.getAnnotation() != null) {

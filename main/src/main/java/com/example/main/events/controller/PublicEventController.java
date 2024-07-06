@@ -2,7 +2,9 @@ package com.example.main.events.controller;
 
 import com.example.main.events.dto.EventFullDto;
 import com.example.main.events.dto.EventShortDto;
+import com.example.main.events.enums.SortConflict;
 import com.example.main.events.service.EventService;
+import com.example.main.exception.model.InvalidRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.domain.PageRequest;
@@ -49,6 +51,9 @@ public class PublicEventController {
                 .ip(request.getRemoteAddr())
                 .timestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))).build();
         final PageRequest page = PageRequest.of(from > 0 ? from / size : 0, size);
+        if (!sort.equalsIgnoreCase(String.valueOf(SortConflict.EVENT_DATE)) && !sort.equalsIgnoreCase(String.valueOf(SortConflict.VIEWS))) {
+            throw new InvalidRequestException("Invalid sorting");
+        }
         List<EventShortDto> eventShortDtos = eventService.getEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, page);
         statClient.saveHit(endpointHitDto);
         return eventShortDtos;

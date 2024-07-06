@@ -113,9 +113,6 @@ public class PrivateEventServiceImpl implements PrivateEventService {
             }
         }
         if (updateEventUserRequest.getEventDate() != null) {
-            if (LocalDateTime.now().plusHours(2).isAfter(updateEventUserRequest.getEventDate())) {
-                throw new InvalidRequestException("Invalid date");
-            }
             eventFromDb.setEventDate(updateEventUserRequest.getEventDate());
         }
         if (updateEventUserRequest.getAnnotation() != null) {

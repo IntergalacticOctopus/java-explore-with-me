@@ -4,6 +4,7 @@ package com.example.main.events.controller;
 import com.example.main.events.dto.EventFullDto;
 import com.example.main.events.dto.UpdateEventAdminRequest;
 import com.example.main.events.service.EventService;
+import com.example.main.exception.model.InvalidRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -20,6 +21,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -32,6 +34,12 @@ public class AdminEventController {
     @PatchMapping("/{eventId}")
     public EventFullDto patch(@RequestBody @Valid UpdateEventAdminRequest updateEventAdminRequest,
                               @PathVariable @PositiveOrZero int eventId) {
+        if (updateEventAdminRequest.getEventDate() != null) {
+            if (LocalDateTime.parse(updateEventAdminRequest.getEventDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                    .isBefore(LocalDateTime.now().plusHours(1))) {
+                throw new InvalidRequestException("Invalid data");
+            }
+        }
         return eventService.patchEvent(updateEventAdminRequest, eventId);
     }
 

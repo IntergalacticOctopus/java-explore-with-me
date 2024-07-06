@@ -3,6 +3,7 @@ package com.example.main.events.controller;
 
 import com.example.main.events.dto.*;
 import com.example.main.events.service.PrivateEventService;
+import com.example.main.exception.model.InvalidRequestException;
 import com.example.main.request.dto.ParticipationRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -55,6 +57,11 @@ public class PrivateEventController {
     public EventFullDto patch(@RequestBody @Valid UpdateEventUserRequest updateEventUserRequest,
                               @PathVariable @PositiveOrZero int userId,
                               @PathVariable @PositiveOrZero int eventId) {
+        if (updateEventUserRequest.getEventDate() != null) {
+            if (LocalDateTime.now().plusHours(2).isAfter(updateEventUserRequest.getEventDate())) {
+                throw new InvalidRequestException("Invalid date");
+            }
+        }
         return privateEventService.patchEvent(updateEventUserRequest, userId, eventId);
     }
 

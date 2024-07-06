@@ -37,10 +37,6 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public void delete(int categoryId) {
-        if (eventRepository.existsByCategory(categoryId)) {
-            throw new DataConflictException("There are events with this category");
-        };
-
         categoryRepository.deleteById(categoryId);
     }
 
@@ -63,8 +59,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CategoryDto> getCategories(int from, int size) {
-        final PageRequest pageRequest = PageRequest.of(from > 0 ? from / size : 0, size);
+    public List<CategoryDto> getCategories(PageRequest pageRequest) {
         return categoryRepository.findAll(pageRequest).getContent().stream()
                 .map(categoryMapper::toCategoryDto)
                 .collect(Collectors.toList());

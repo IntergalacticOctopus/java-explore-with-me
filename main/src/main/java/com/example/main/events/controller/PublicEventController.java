@@ -5,6 +5,7 @@ import com.example.main.events.dto.EventShortDto;
 import com.example.main.events.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,8 +48,10 @@ public class PublicEventController {
                 .uri("/events")
                 .ip(request.getRemoteAddr())
                 .timestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))).build();
+        final PageRequest page = PageRequest.of(from > 0 ? from / size : 0, size);
+        List<EventShortDto> eventShortDtos = eventService.getEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, page);
         statClient.saveHit(endpointHitDto);
-        return eventService.getEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
+        return eventShortDtos;
     }
 
     @GetMapping("/{id}")

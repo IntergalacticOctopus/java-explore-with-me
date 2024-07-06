@@ -50,8 +50,7 @@ public class EventServiceImpl implements EventService {
             LocalDateTime rangeEnd,
             Boolean onlyAvailable,
             String sort,
-            int from,
-            int size) {
+            PageRequest page) {
         if (text.isBlank()) {
             text = "";
         }
@@ -65,7 +64,6 @@ public class EventServiceImpl implements EventService {
         if (rangeStart == null || rangeEnd == null || rangeStart.isAfter(rangeEnd)) {
             throw new InvalidRequestException("Invalid time");
         }
-        final PageRequest page = PageRequest.of(from > 0 ? from / size : 0, size);
         final Page<Event> events;
         if (categories != null && categories.isEmpty()) {
             categories = null;
@@ -217,8 +215,7 @@ public class EventServiceImpl implements EventService {
                                         List<Integer> categories,
                                         LocalDateTime rangeStart,
                                         LocalDateTime rangeEnd,
-                                        int from,
-                                        int size) {
+                                        PageRequest pageRequest) {
         List<EventState> eventStates = null;
         if (rangeStart == null) {
             rangeStart = LocalDateTime.now();
@@ -245,7 +242,7 @@ public class EventServiceImpl implements EventService {
                 eventStates.add(EventState.valueOf(state));
             }
         }
-        final PageRequest pageRequest = PageRequest.of(from > 0 ? from / size : 0, size);
+
         final Page<Event> events = eventRepository.getByUserIdsStatesCategories(
                 usersIds, eventStates, categories,
                 rangeStart, rangeEnd, pageRequest

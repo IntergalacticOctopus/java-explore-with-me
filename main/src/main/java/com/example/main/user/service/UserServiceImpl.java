@@ -42,9 +42,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<UserDto> getAllUsers(List<Integer> ids, int from, int size) {
+    public List<UserDto> getAllUsers(List<Integer> ids, PageRequest pageRequest) {
         if (ids.isEmpty()) {
-            final PageRequest pageRequest = PageRequest.of(from > 0 ? from / size : 0, size);
+
             return userRepository.findAll(pageRequest)
                     .map(userMapper::createUserDto)
                     .getContent();

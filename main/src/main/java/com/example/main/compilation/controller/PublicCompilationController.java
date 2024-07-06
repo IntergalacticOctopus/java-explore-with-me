@@ -3,6 +3,7 @@ package com.example.main.compilation.controller;
 import com.example.main.compilation.dto.CompilationDto;
 import com.example.main.compilation.service.CompilationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +22,8 @@ public class PublicCompilationController {
     public List<CompilationDto> get(@RequestParam(defaultValue = "false") boolean pinned,
                                     @RequestParam(defaultValue = "0") @PositiveOrZero int from,
                                     @RequestParam(defaultValue = "10") @Positive int size) {
-        return compilationService.getCompilation(pinned, from, size);
+        final PageRequest pageRequest = PageRequest.of(from > 0 ? from / size : 0, size);
+        return compilationService.getCompilation(pinned, pageRequest);
     }
 
     @GetMapping("/{compId}")

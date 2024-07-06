@@ -5,9 +5,7 @@ import com.example.main.compilation.dto.NewCompilationDto;
 import com.example.main.compilation.dto.UpdateCompilationRequest;
 import com.example.main.compilation.mapper.CompilationMapper;
 import com.example.main.compilation.model.Compilation;
-import com.example.main.compilation.model.EventCompilationConnection;
 import com.example.main.compilation.repository.CompilationRepository;
-import com.example.main.compilation.repository.EventCompilationConnectionRepository;
 import com.example.main.events.dto.EventShortDto;
 import com.example.main.events.mapper.EventMapper;
 import com.example.main.events.model.Event;
@@ -21,9 +19,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,21 +30,19 @@ public class CompilationServiceImpl implements CompilationService {
     private final EventRepository eventRepository;
     private final RequestRepository requestRepository;
     private final CompilationRepository compilationRepository;
-    private final EventCompilationConnectionRepository eventCompilationConnectionRepository;
     private final CompilationMapper compilationMapper;
     private final EventMapper eventMapper;
 
     @Override
     @Transactional(readOnly = true)
-    public List<CompilationDto> getCompilation(boolean pinned, int from, int size) {
-        final PageRequest pageRequest = PageRequest.of(from > 0 ? from / size : 0, size);
+    public List<CompilationDto> getCompilation(boolean pinned, PageRequest pageRequest) {
         if (pinned) {
             return compilationRepository.getAllByPinned(true, pageRequest).getContent().stream()
-                    .map(event -> compilationMapper.toCompilation(event, requestRepository))
+                    .map(event -> compilationMapper.toCompilationDto(event, requestRepository))
                     .collect(Collectors.toList());
         }
         return compilationRepository.findAll(pageRequest).getContent().stream()
-                .map(event -> compilationMapper.toCompilation(event, requestRepository))
+                .map(event -> compilationMapper.toCompilationDto(event, requestRepository))
                 .collect(Collectors.toList());
     }
 
@@ -57,39 +53,41 @@ public class CompilationServiceImpl implements CompilationService {
                 .orElseThrow(
                         () -> new EntityNotFoundException("Data not found")
                 );
-        return compilationMapper.toCompilation(compilation, requestRepository);
+        return compilationMapper.toCompilationDto(compilation, requestRepository);
     }
 
     @Override
     @Transactional
     public CompilationDto postCompilation(NewCompilationDto compilationDto) {
+
+
         if (compilationRepository.existsByTitle(compilationDto.getTitle())) {
             throw new DataConflictException("Data not found");
         }
-        List<EventShortDto> eventShortDtoList = new ArrayList<>();
-        final Compilation compilation = compilationMapper.toNewCompilationDto(compilationDto);
-        final Compilation compilationFromDb = compilationRepository.save(compilation);
-        if (compilationDto.getEvents() != null && !compilationDto.getEvents().isEmpty()) {
-            List<Event> events = eventRepository.findAllById(new ArrayList<>(compilationDto.getEvents()));
-            eventShortDtoList = events.stream()
-                    .map(
-                            event -> eventMapper.toEventShortDto(
-                                    event,
-                                    requestRepository.countRequestByEventIdAndStatus(
-                                            event.getId(),
-                                            RequestStatus.CONFIRMED
-                                    )
-                            )
-                    )
-                    .collect(Collectors.toList());
-            for (Integer eventId : compilationDto.getEvents()) {
-                eventCompilationConnectionRepository.save(
-                        new EventCompilationConnection(0, eventId, compilationFromDb.getId())
-                );
-            }
-            return compilationMapper.toCompilation(compilation, eventShortDtoList);
+
+        Set<Event> events = new HashSet<>();
+        if (compilationDto.getEvents() != null) {
+            events = new HashSet<>(eventRepository.findAllById(compilationDto.getEvents()));
         }
-        return compilationMapper.toCompilation(compilationFromDb, eventShortDtoList);
+        Compilation compilation = compilationMapper.toCompilation(compilationDto);
+        compilation.setEvents(events);
+
+        final Compilation compilationFromDb = compilationRepository.save(compilation);
+
+        List<EventShortDto> eventShortDtoList = events.stream()
+                .map(
+                        event -> eventMapper.toEventShortDto(
+                                event,
+                                requestRepository.countRequestByEventIdAndStatus(
+                                        event.getId(),
+                                        RequestStatus.CONFIRMED
+                                )
+                        )
+                )
+                .collect(Collectors.toList());
+
+        return compilationMapper.toCompilationDto(compilationFromDb, eventShortDtoList);
+
     }
 
     @Override
@@ -123,7 +121,7 @@ public class CompilationServiceImpl implements CompilationService {
                 );
             }
         }
-        return compilationMapper.toCompilation(
+        return compilationMapper.toCompilationDto(
                 compilationRepository.save(compilationFromDb),
                 requestRepository
         );

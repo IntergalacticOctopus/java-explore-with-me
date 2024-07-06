@@ -6,14 +6,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class EventRequestStatusUpdateRequest {
-    private List<Integer> requestIds;
+    private Set<Integer> requestIds;
 
     private RequestStatus status;
 

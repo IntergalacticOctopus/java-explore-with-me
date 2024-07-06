@@ -5,6 +5,7 @@ import com.example.main.events.dto.EventFullDto;
 import com.example.main.events.dto.UpdateEventAdminRequest;
 import com.example.main.events.service.EventService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,6 +43,7 @@ public class AdminEventController {
                                   @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
                                   @RequestParam(defaultValue = "0") @PositiveOrZero int from,
                                   @RequestParam(defaultValue = "10") @Positive int size) {
-        return eventService.getEvents(users, states, categories, rangeStart, rangeEnd, from, size);
+        final PageRequest pageRequest = PageRequest.of(from > 0 ? from / size : 0, size);
+        return eventService.getEvents(users, states, categories, rangeStart, rangeEnd, pageRequest);
     }
 }

@@ -4,6 +4,7 @@ import com.example.main.user.dto.NewUserRequest;
 import com.example.main.user.dto.UserDto;
 import com.example.main.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -44,6 +45,7 @@ public class AdminUserControllerImpl {
     public List<UserDto> getAll(@RequestParam(defaultValue = "") List<Integer> ids,
                                 @RequestParam(defaultValue = "0") @PositiveOrZero int from,
                                 @RequestParam(defaultValue = "10") @Positive int size) {
-        return userService.getAllUsers(ids, from, size);
+        final PageRequest pageRequest = PageRequest.of(from > 0 ? from / size : 0, size);
+        return userService.getAllUsers(ids, pageRequest);
     }
 }

@@ -3,13 +3,14 @@ package com.example.main.events.service;
 
 import com.example.main.events.dto.*;
 import com.example.main.request.dto.ParticipationRequestDto;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 
 public interface PrivateEventService {
     EventFullDto postEvent(NewEventDto newEventDto, int userId);
 
-    List<EventShortDto> getUserEvents(int userId, int from, int size);
+    List<EventShortDto> getUserEvents(int userId, PageRequest pageRequest);
 
     EventFullDto getEventById(int userId, int eventId);
 

@@ -3,6 +3,7 @@ package com.example.main.category.controller;
 import com.example.main.category.dto.CategoryDto;
 import com.example.main.category.service.CategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +25,8 @@ public class PublicCategoryController {
     @GetMapping
     public List<CategoryDto> get(@RequestParam(defaultValue = "0") @PositiveOrZero int from,
                                  @RequestParam(defaultValue = "10") @Positive int size) {
-        return categoryService.getCategories(from, size);
+        final PageRequest pageRequest = PageRequest.of(from > 0 ? from / size : 0, size);
+        return categoryService.getCategories(pageRequest);
     }
 
     @GetMapping("/{catId}")

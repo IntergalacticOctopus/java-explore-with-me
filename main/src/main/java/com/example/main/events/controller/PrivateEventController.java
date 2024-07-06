@@ -5,6 +5,7 @@ import com.example.main.events.dto.*;
 import com.example.main.events.service.PrivateEventService;
 import com.example.main.request.dto.ParticipationRequestDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,7 +41,8 @@ public class PrivateEventController {
     public List<EventShortDto> getUserEvents(@PathVariable @PositiveOrZero int userId,
                                              @RequestParam(defaultValue = "0") @PositiveOrZero int from,
                                              @RequestParam(defaultValue = "10") @Positive int size) {
-        return privateEventService.getUserEvents(userId, from, size);
+        final PageRequest pageRequest = PageRequest.of(from > 0 ? from / size : 0, size);
+        return privateEventService.getUserEvents(userId, pageRequest);
     }
 
     @GetMapping("/{eventId}")

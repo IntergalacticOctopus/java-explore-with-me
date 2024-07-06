@@ -60,8 +60,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<EventShortDto> getUserEvents(int userId, int from, int size) {
-        final PageRequest pageRequest = PageRequest.of(from > 0 ? from / size : 0, size);
+    public List<EventShortDto> getUserEvents(int userId, PageRequest pageRequest) {
         if (!userRepository.existsById(userId)) {
             throw new EntityNotFoundException("Data not found");
         }

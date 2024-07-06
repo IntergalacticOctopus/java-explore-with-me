@@ -5,7 +5,6 @@ import com.example.main.category.dto.NewCategoryDto;
 import com.example.main.category.mapper.CategoryMapper;
 import com.example.main.category.model.Category;
 import com.example.main.category.repository.CategoryRepository;
-import com.example.main.events.repository.EventRepository;
 import com.example.main.exception.errors.DataConflictException;
 import com.example.main.exception.errors.NotFoundException;
 import lombok.RequiredArgsConstructor;

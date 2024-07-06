@@ -1,7 +1,7 @@
 package com.example.main.user.service;
 
-import com.example.main.exception.model.DataConflictException;
-import com.example.main.exception.model.EntityNotFoundException;
+import com.example.main.exception.errors.DataConflictException;
+import com.example.main.exception.errors.NotFoundException;
 import com.example.main.user.dto.NewUserRequest;
 import com.example.main.user.dto.UserDto;
 import com.example.main.user.mapper.UserMapper;
@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void deleteUser(int userId) {
         if (!userRepository.existsById(userId)) {
-            throw new EntityNotFoundException("Data not found");
+            throw new NotFoundException("Data not found");
         }
         userRepository.deleteById(userId);
     }

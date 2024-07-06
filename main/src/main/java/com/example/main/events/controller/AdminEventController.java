@@ -4,7 +4,7 @@ package com.example.main.events.controller;
 import com.example.main.events.dto.EventFullDto;
 import com.example.main.events.dto.UpdateEventAdminRequest;
 import com.example.main.events.service.EventService;
-import com.example.main.exception.model.InvalidRequestException;
+import com.example.main.exception.errors.InvalidRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;

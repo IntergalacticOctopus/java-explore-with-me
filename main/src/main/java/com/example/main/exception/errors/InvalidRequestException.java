@@ -1,4 +1,4 @@
-package com.example.main.exception.model;
+package com.example.main.exception.errors;
 
 public class InvalidRequestException extends RuntimeException {
     public InvalidRequestException(String message) {

@@ -1,4 +1,4 @@
-package com.example.main.events.enums;
+package com.example.main.events.model;
 
 public enum SortConflict {
     EVENT_DATE,

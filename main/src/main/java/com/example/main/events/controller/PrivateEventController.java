@@ -3,7 +3,7 @@ package com.example.main.events.controller;
 
 import com.example.main.events.dto.*;
 import com.example.main.events.service.PrivateEventService;
-import com.example.main.exception.model.InvalidRequestException;
+import com.example.main.exception.errors.InvalidRequestException;
 import com.example.main.request.dto.ParticipationRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;

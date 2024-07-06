@@ -7,9 +7,9 @@ import com.example.main.events.mapper.EventMapper;
 import com.example.main.events.model.Event;
 import com.example.main.events.model.EventState;
 import com.example.main.events.repository.EventRepository;
-import com.example.main.exception.model.DataConflictException;
-import com.example.main.exception.model.EntityNotFoundException;
-import com.example.main.exception.model.InvalidRequestException;
+import com.example.main.exception.errors.DataConflictException;
+import com.example.main.exception.errors.NotFoundException;
+import com.example.main.exception.errors.InvalidRequestException;
 import com.example.main.request.dto.ParticipationRequestDto;
 import com.example.main.request.mapper.RequestMapper;
 import com.example.main.request.model.Request;
@@ -44,11 +44,11 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         }
         final User userFromDb = userRepository.findById(userId)
                 .orElseThrow(
-                        () -> new EntityNotFoundException("Data not found")
+                        () -> new NotFoundException("Data not found")
                 );
         final Category categoryFromDb = categoryRepository.findById(newEventDto.getCategory())
                 .orElseThrow(
-                        () -> new EntityNotFoundException("Data not found")
+                        () -> new NotFoundException("Data not found")
                 );
         final Event event = eventMapper.toEvent(newEventDto, userFromDb, categoryFromDb);
         final Event eventFromDb = eventRepository.save(event);
@@ -62,7 +62,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     @Transactional(readOnly = true)
     public List<EventShortDto> getUserEvents(int userId, PageRequest pageRequest) {
         if (!userRepository.existsById(userId)) {
-            throw new EntityNotFoundException("Data not found");
+            throw new NotFoundException("Data not found");
         }
         return eventRepository.getByInitiatorId(userId, pageRequest).stream()
                 .map(
@@ -77,11 +77,11 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     @Transactional(readOnly = true)
     public EventFullDto getEventById(int userId, int eventId) {
         if (!userRepository.existsById(userId)) {
-            throw new EntityNotFoundException("Data not found");
+            throw new NotFoundException("Data not found");
         }
         final Event eventFromDb = eventRepository.findById(eventId)
                 .orElseThrow(
-                        () -> new EntityNotFoundException("Data not found")
+                        () -> new NotFoundException("Data not found")
                 );
         return eventMapper.toEventFullDto(
                 eventFromDb,
@@ -93,10 +93,10 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     @Transactional
     public EventFullDto patchEvent(UpdateEventUserRequest updateEventUserRequest, int userId, int eventId) {
         if (!userRepository.existsById(userId)) {
-            throw new EntityNotFoundException("Data not found");
+            throw new NotFoundException("Data not found");
         }
         final Event eventFromDb = eventRepository.findById(eventId)
-                .orElseThrow(() -> new EntityNotFoundException("Data not found"));
+                .orElseThrow(() -> new NotFoundException("Data not found"));
         if (eventFromDb.getState().equals(EventState.PUBLISHED)) {
             throw new DataConflictException("Invalid data");
         }
@@ -122,7 +122,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
                 updateEventUserRequest.getCategory() != (eventFromDb.getCategory().getId())) {
             Category category = categoryRepository.findById(updateEventUserRequest.getCategory())
                     .orElseThrow(
-                            () -> new EntityNotFoundException("Data not found")
+                            () -> new NotFoundException("Data not found")
                     );
             eventFromDb.setCategory(category);
         }
@@ -154,10 +154,10 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     @Transactional(readOnly = true)
     public List<ParticipationRequestDto> getRequestsInEvent(int userId, int eventId) {
         if (!userRepository.existsById(userId)) {
-            throw new EntityNotFoundException("Data not found");
+            throw new NotFoundException("Data not found");
         }
         if (!eventRepository.existsById(eventId)) {
-            throw new EntityNotFoundException("Data not found");
+            throw new NotFoundException("Data not found");
         }
         return requestRepository.getRequestsByEventId(eventId).stream()
                 .map(requestMapper::toParticipationRequestDto)
@@ -170,10 +170,10 @@ public class PrivateEventServiceImpl implements PrivateEventService {
                                                         int userId,
                                                         int eventId) {
         if (!userRepository.existsById(userId)) {
-            throw new EntityNotFoundException(String.format("Data not found"));
+            throw new NotFoundException(String.format("Data not found"));
         }
         if (!eventRepository.existsById(eventId)) {
-            throw new EntityNotFoundException(String.format("Data not found"));
+            throw new NotFoundException(String.format("Data not found"));
         }
         final List<Request> requests = requestRepository.findAllById(eventRequestStatusUpdateRequest.getRequestIds());
         switch (eventRequestStatusUpdateRequest.getStatus()) {

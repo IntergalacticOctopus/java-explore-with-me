@@ -3,9 +3,9 @@ package com.example.main.request.service;
 import com.example.main.events.model.Event;
 import com.example.main.events.model.EventState;
 import com.example.main.events.repository.EventRepository;
-import com.example.main.exception.model.DataConflictException;
-import com.example.main.exception.model.EntityNotFoundException;
-import com.example.main.exception.model.ForbiddenOperationException;
+import com.example.main.exception.errors.DataConflictException;
+import com.example.main.exception.errors.NotFoundException;
+import com.example.main.exception.errors.ForbiddenOperationException;
 import com.example.main.request.dto.ParticipationRequestDto;
 import com.example.main.request.mapper.RequestMapper;
 import com.example.main.request.model.Request;
@@ -32,9 +32,9 @@ public class RequestServiceImpl implements RequestService {
     @Transactional
     public ParticipationRequestDto postRequest(int userId, int eventId) {
         final User userFromDb = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("Data not found"));
+                .orElseThrow(() -> new NotFoundException("Data not found"));
         final Event eventFromDb = eventRepository.findById(eventId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("Data not found")));
+                .orElseThrow(() -> new NotFoundException(String.format("Data not found")));
         if (requestRepository.existsByRequesterIdAndEventId(userId, eventId)) {
             throw new DataConflictException("User already exists");
         }
@@ -61,7 +61,7 @@ public class RequestServiceImpl implements RequestService {
     public List<ParticipationRequestDto> getRequests(int userId) {
 
         if (!userRepository.existsById(userId)) {
-            throw new EntityNotFoundException("Data not found");
+            throw new NotFoundException("Data not found");
         }
 
         return requestRepository.getRequestsByRequesterId(userId).stream()
@@ -73,10 +73,10 @@ public class RequestServiceImpl implements RequestService {
     @Transactional
     public ParticipationRequestDto cancelRequest(int userId, int requestId) {
         if (!userRepository.existsById(userId)) {
-            throw new EntityNotFoundException("Data not found");
+            throw new NotFoundException("Data not found");
         }
         final Request request = requestRepository.findById(requestId)
-                .orElseThrow(() -> new EntityNotFoundException("Data not found"));
+                .orElseThrow(() -> new NotFoundException("Data not found"));
         if (request.getRequester().getId() != userId) {
             throw new ForbiddenOperationException("User is not owner");
         }

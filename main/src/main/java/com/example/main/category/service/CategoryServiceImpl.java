@@ -6,9 +6,8 @@ import com.example.main.category.mapper.CategoryMapper;
 import com.example.main.category.model.Category;
 import com.example.main.category.repository.CategoryRepository;
 import com.example.main.events.repository.EventRepository;
-import com.example.main.events.service.EventService;
-import com.example.main.exception.model.DataConflictException;
-import com.example.main.exception.model.EntityNotFoundException;
+import com.example.main.exception.errors.DataConflictException;
+import com.example.main.exception.errors.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -45,7 +44,7 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto patch(CategoryDto categoryDto, int categoryId) {
         final Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(
-                        () -> new EntityNotFoundException("Data not found")
+                        () -> new NotFoundException("Data not found")
                 );
         if (categoryDto.getName().equals(category.getName())) {
             return categoryMapper.toCategoryDto(category);
@@ -69,7 +68,7 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto getById(int categoryId) {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(
-                        () -> new EntityNotFoundException("Data not found")
+                        () -> new NotFoundException("Data not found")
                 );
         return categoryMapper.toCategoryDto(category);
     }

@@ -2,9 +2,9 @@ package com.example.main.events.controller;
 
 import com.example.main.events.dto.EventFullDto;
 import com.example.main.events.dto.EventShortDto;
-import com.example.main.events.enums.SortConflict;
+import com.example.main.events.model.SortConflict;
 import com.example.main.events.service.EventService;
-import com.example.main.exception.model.InvalidRequestException;
+import com.example.main.exception.errors.InvalidRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.domain.PageRequest;

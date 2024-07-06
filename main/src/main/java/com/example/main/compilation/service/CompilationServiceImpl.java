@@ -10,8 +10,8 @@ import com.example.main.events.dto.EventShortDto;
 import com.example.main.events.mapper.EventMapper;
 import com.example.main.events.model.Event;
 import com.example.main.events.repository.EventRepository;
-import com.example.main.exception.model.DataConflictException;
-import com.example.main.exception.model.EntityNotFoundException;
+import com.example.main.exception.errors.DataConflictException;
+import com.example.main.exception.errors.NotFoundException;
 import com.example.main.request.model.RequestStatus;
 import com.example.main.request.repository.RequestRepository;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +51,7 @@ public class CompilationServiceImpl implements CompilationService {
     public CompilationDto getCompilationById(int compilationId) {
         final Compilation compilation = compilationRepository.findById(compilationId)
                 .orElseThrow(
-                        () -> new EntityNotFoundException("Data not found")
+                        () -> new NotFoundException("Data not found")
                 );
         return compilationMapper.toCompilationDto(compilation, requestRepository);
     }
@@ -94,7 +94,7 @@ public class CompilationServiceImpl implements CompilationService {
     @Transactional
     public void deleteCompilation(int compilationId) {
         if (!compilationRepository.existsById(compilationId)) {
-            throw new EntityNotFoundException("Data not found");
+            throw new NotFoundException("Data not found");
         }
         compilationRepository.deleteById(compilationId);
     }
@@ -104,7 +104,7 @@ public class CompilationServiceImpl implements CompilationService {
     public CompilationDto patchCompilation(UpdateCompilationRequest updateCompilationRequest, int compilationId) {
         final Compilation compilationFromDb = compilationRepository.findById(compilationId)
                 .orElseThrow(
-                        () -> new EntityNotFoundException("Data not found")
+                        () -> new NotFoundException("Data not found")
                 );
         if (updateCompilationRequest.getTitle() != null && !updateCompilationRequest.getTitle().isBlank()) {
             compilationFromDb.setTitle(updateCompilationRequest.getTitle());

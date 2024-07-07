@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -103,6 +104,12 @@ public class ErrorHandler {
     @ExceptionHandler(value = {Exception.class,})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiError handleException(final Exception e) {
-        return new ApiError(new ArrayList<>((Collection) e), e.getMessage(), "Server error", HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ApiError(null, e.getMessage(), "Server error", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleMissingServletRequestParameterException(final MissingServletRequestParameterException exception) {
+        log.info(exception.getMessage());
+        return new ApiError(null, exception.getMessage(), "Incorrect request", HttpStatus.BAD_REQUEST);
     }
 }

@@ -11,8 +11,6 @@ import com.example.main.events.mapper.EventMapper;
 import com.example.main.events.model.Event;
 import com.example.main.events.repository.EventRepository;
 import com.example.main.exception.errors.NotFoundException;
-import com.example.main.request.model.RequestStatus;
-import com.example.main.request.repository.RequestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -27,7 +25,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CompilationServiceImpl implements CompilationService {
     private final EventRepository eventRepository;
-    private final RequestRepository requestRepository;
     private final CompilationRepository compilationRepository;
     private final CompilationMapper compilationMapper;
     private final EventMapper eventMapper;
@@ -37,11 +34,11 @@ public class CompilationServiceImpl implements CompilationService {
     public List<CompilationDto> getCompilation(boolean pinned, PageRequest pageRequest) {
         if (pinned) {
             return compilationRepository.getAllByPinned(true, pageRequest).getContent().stream()
-                    .map(event -> compilationMapper.toCompilationDto(event, requestRepository))
+                    .map(event -> compilationMapper.toCompilationDto(event))
                     .collect(Collectors.toList());
         }
         return compilationRepository.findAll(pageRequest).getContent().stream()
-                .map(event -> compilationMapper.toCompilationDto(event, requestRepository))
+                .map(event -> compilationMapper.toCompilationDto(event))
                 .collect(Collectors.toList());
     }
 
@@ -52,7 +49,7 @@ public class CompilationServiceImpl implements CompilationService {
                 .orElseThrow(
                         () -> new NotFoundException("Data not found")
                 );
-        return compilationMapper.toCompilationDto(compilation, requestRepository);
+        return compilationMapper.toCompilationDto(compilation);
     }
 
     @Override
@@ -62,21 +59,19 @@ public class CompilationServiceImpl implements CompilationService {
         Set<Event> events = new HashSet<>();
         if (compilationDto.getEvents() != null) {
             events = new HashSet<>(eventRepository.findAllById(compilationDto.getEvents()));
+            if (events.size() != compilationDto.getEvents().size()) {
+                throw new NotFoundException("Number of events does not match");
+            }
         }
         Compilation compilation = compilationMapper.toCompilation(compilationDto);
+
         compilation.setEvents(events);
 
         final Compilation compilationFromDb = compilationRepository.save(compilation);
 
         List<EventShortDto> eventShortDtoList = events.stream()
                 .map(
-                        event -> eventMapper.toEventShortDto(
-                                event,
-                                requestRepository.countRequestByEventIdAndStatus(
-                                        event.getId(),
-                                        RequestStatus.CONFIRMED
-                                )
-                        )
+                        event -> eventMapper.toEventShortDto(event)
                 )
                 .collect(Collectors.toList());
 
@@ -110,14 +105,16 @@ public class CompilationServiceImpl implements CompilationService {
             if (updateCompilationRequest.getEvents().isEmpty()) {
                 compilationFromDb.setEvents(new HashSet<>());
             } else {
-                compilationFromDb.setEvents(new HashSet<>(
-                        eventRepository.findAllById(updateCompilationRequest.getEvents()))
-                );
+                Set<Event> events = new HashSet<>(
+                        eventRepository.findAllById(updateCompilationRequest.getEvents()));
+                if (events.size() != updateCompilationRequest.getEvents().size()) {
+                    throw new NotFoundException("Number of events does not match");
+                }
+                compilationFromDb.setEvents(events);
             }
         }
         return compilationMapper.toCompilationDto(
-                compilationRepository.save(compilationFromDb),
-                requestRepository
+                compilationRepository.save(compilationFromDb)
         );
     }
 }

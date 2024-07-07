@@ -2,9 +2,10 @@ package com.example.main.events.controller;
 
 
 import com.example.main.events.dto.*;
-import com.example.main.events.service.PrivateEventService;
+import com.example.main.events.service.EventService;
 import com.example.main.exception.errors.InvalidRequestException;
 import com.example.main.request.dto.ParticipationRequestDto;
+import com.example.main.request.service.RequestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -30,13 +31,14 @@ import java.util.List;
 @RequestMapping("/users/{userId}/events")
 @Validated
 public class PrivateEventController {
-    private final PrivateEventService privateEventService;
+    private final EventService eventService;
+    private final RequestService requestService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public EventFullDto post(@RequestBody @Valid NewEventDto newEventDto,
                              @PathVariable @PositiveOrZero int userId) {
-        return privateEventService.postEvent(newEventDto, userId);
+        return eventService.postEvent(newEventDto, userId);
     }
 
     @GetMapping
@@ -44,13 +46,13 @@ public class PrivateEventController {
                                              @RequestParam(defaultValue = "0") @PositiveOrZero int from,
                                              @RequestParam(defaultValue = "10") @Positive int size) {
         final PageRequest pageRequest = PageRequest.of(from > 0 ? from / size : 0, size);
-        return privateEventService.getUserEvents(userId, pageRequest);
+        return eventService.getUserEvents(userId, pageRequest);
     }
 
     @GetMapping("/{eventId}")
     public EventFullDto getById(@PathVariable @PositiveOrZero int userId,
                                 @PathVariable @PositiveOrZero int eventId) {
-        return privateEventService.getEventById(userId, eventId);
+        return eventService.getEventById(userId, eventId);
     }
 
     @PatchMapping("/{eventId}")
@@ -62,19 +64,19 @@ public class PrivateEventController {
                 throw new InvalidRequestException("Invalid date");
             }
         }
-        return privateEventService.patchEvent(updateEventUserRequest, userId, eventId);
+        return eventService.patchEvent(updateEventUserRequest, userId, eventId);
     }
 
     @GetMapping("/{eventId}/requests")
     public List<ParticipationRequestDto> getRequestsInEvent(@PathVariable @PositiveOrZero int userId,
                                                             @PathVariable @PositiveOrZero int eventId) {
-        return privateEventService.getRequestsInEvent(userId, eventId);
+        return eventService.getRequestsInEvent(userId, eventId);
     }
 
     @PatchMapping("/{eventId}/requests")
     public EventRequestStatusUpdateResult patchRequests(@RequestBody EventRequestStatusUpdateRequest eventRequestStatusUpdateRequest,
                                                         @PathVariable @PositiveOrZero int userId,
                                                         @PathVariable @PositiveOrZero int eventId) {
-        return privateEventService.patchRequests(eventRequestStatusUpdateRequest, userId, eventId);
+        return requestService.patchRequests(eventRequestStatusUpdateRequest, userId, eventId);
     }
 }

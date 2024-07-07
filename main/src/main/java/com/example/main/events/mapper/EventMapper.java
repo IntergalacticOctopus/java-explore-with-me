@@ -38,12 +38,11 @@ public class EventMapper {
 
     }
 
-    public EventShortDto toEventShortDto(Event event, int confirmedRequests) {
+    public EventShortDto toEventShortDto(Event event) {
         return EventShortDto.builder()
                 .id(event.getId())
                 .annotation(event.getAnnotation())
                 .category(categoryMapper.toCategoryDto(event.getCategory()))
-                .confirmedRequests(confirmedRequests)
                 .eventDate(event.getEventDate())
                 .initiator(userMapper.createUserShortDto(event.getInitiator()))
                 .paid(event.getPaid())

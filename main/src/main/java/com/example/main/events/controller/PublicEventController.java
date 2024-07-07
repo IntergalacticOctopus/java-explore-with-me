@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.HitDto;
-import ru.practicum.client.StatClient;
+import ru.practicum.client.StatClientImpl;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Positive;
@@ -31,7 +31,7 @@ import java.util.List;
 @Validated
 @ComponentScan(basePackages = {"ru.practicum.StatClient"})
 public class PublicEventController {
-    private final StatClient statClient;
+    private final StatClientImpl statClient;
     private final EventService eventService;
 
     @GetMapping

@@ -5,9 +5,6 @@ import com.example.main.compilation.dto.NewCompilationDto;
 import com.example.main.compilation.model.Compilation;
 import com.example.main.events.dto.EventShortDto;
 import com.example.main.events.mapper.EventMapper;
-import com.example.main.events.repository.EventRepository;
-import com.example.main.request.model.RequestStatus;
-import com.example.main.request.repository.RequestRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +15,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class CompilationMapper {
     private final EventMapper eventMapper;
-    private final EventRepository eventRepository;
 
     public Compilation toCompilation(NewCompilationDto newCompilationDto) {
         return Compilation.builder()
@@ -38,20 +34,13 @@ public class CompilationMapper {
                 .build();
     }
 
-    public CompilationDto toCompilationDto(Compilation compilation,
-                                           RequestRepository requestRepository) {
+    public CompilationDto toCompilationDto(Compilation compilation) {
         return CompilationDto.builder()
                 .id(compilation.getId())
                 .pinned(compilation.getPinned())
                 .title(compilation.getTitle())
                 .events(compilation.getEvents().stream()
-                        .map(event -> eventMapper.toEventShortDto(
-                                        event,
-                                        requestRepository.countRequestByEventIdAndStatus(
-                                                event.getId(),
-                                                RequestStatus.CONFIRMED
-                                        )
-                                )
+                        .map(event -> eventMapper.toEventShortDto(event)
                         )
                         .collect(Collectors.toList()))
                 .build();

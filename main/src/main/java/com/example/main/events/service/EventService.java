@@ -1,8 +1,7 @@
 package com.example.main.events.service;
 
-import com.example.main.events.dto.EventFullDto;
-import com.example.main.events.dto.EventShortDto;
-import com.example.main.events.dto.UpdateEventAdminRequest;
+import com.example.main.events.dto.*;
+import com.example.main.request.dto.ParticipationRequestDto;
 import org.springframework.data.domain.PageRequest;
 
 import java.time.LocalDateTime;
@@ -16,4 +15,14 @@ public interface EventService {
     List<EventShortDto> getEvents(String text, List<Integer> categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean onlyAvailable, String sort, PageRequest page);
 
     EventFullDto getEventById(int id);
+
+    EventFullDto postEvent(NewEventDto newEventDto, int userId);
+
+    List<EventShortDto> getUserEvents(int userId, PageRequest pageRequest);
+
+    EventFullDto getEventById(int userId, int eventId);
+
+    EventFullDto patchEvent(UpdateEventUserRequest updateEventUserRequest, int userId, int eventId);
+
+    List<ParticipationRequestDto> getRequestsInEvent(int userId, int eventId);
 }

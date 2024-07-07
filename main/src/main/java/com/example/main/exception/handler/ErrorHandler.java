@@ -18,47 +18,89 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.server.MethodNotAllowedException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
+import java.util.List;
+
 @RestControllerAdvice
 @Slf4j
 public class ErrorHandler {
 
-    @ExceptionHandler(value = {
-            HttpMessageNotReadableException.class,
-            NoHandlerFoundException.class,
-            MethodNotAllowedException.class,
-            HttpRequestMethodNotSupportedException.class,
-            NumberFormatException.class,
-            MethodArgumentNotValidException.class,
-            MethodArgumentTypeMismatchException.class,
-            InvalidRequestException.class
-    })
+    @ExceptionHandler(value = {HttpMessageNotReadableException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError handleBadRequest(final Exception e) {
+    public ApiError handleHttpMessageNotReadableException(final HttpMessageNotReadableException e) {
         return new ApiError(null, e.getMessage(), "Incorrectly made request", HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(value = {
-            NotFoundException.class
-    })
+    @ExceptionHandler(value = {NoHandlerFoundException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleNoHandlerFoundException(final NoHandlerFoundException e) {
+        return new ApiError(null, e.getMessage(), "Incorrectly made request", HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = {MethodNotAllowedException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleMethodNotAllowedException(final MethodNotAllowedException e) {
+        return new ApiError(null, e.getMessage(), "Incorrectly made request", HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = {HttpRequestMethodNotSupportedException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleHttpRequestMethodNotSupportedException(final HttpRequestMethodNotSupportedException e) {
+        return new ApiError(null, e.getMessage(), "Incorrectly made request", HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = {NumberFormatException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleNumberFormatException(final NumberFormatException e) {
+        return new ApiError(null, e.getMessage(), "Incorrectly made request", HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = {MethodArgumentNotValidException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
+        return new ApiError(null, e.getMessage(), "Incorrectly made request", HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = {MethodArgumentTypeMismatchException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleMethodArgumentTypeMismatchException(final MethodArgumentTypeMismatchException e) {
+        return new ApiError(null, e.getMessage(), "Incorrectly made request", HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = {InvalidRequestException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleInvalidRequestException(final InvalidRequestException e) {
+        return new ApiError(null, e.getMessage(), "Incorrectly made request", HttpStatus.BAD_REQUEST);
+    }
+
+
+    @ExceptionHandler(value = {NotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiError handleNotfoundException(final Exception exception) {
+    public ApiError handleNotFoundException(final Exception exception) {
         return new ApiError(null, exception.getMessage(), "The required object was not found", HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(value = {
-            DataConflictException.class,
-            DataIntegrityViolationException.class
-    })
+    @ExceptionHandler(value = {DataConflictException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ApiError handleDataConflictException(final Exception e) {
+    public ApiError handleDataConflictException(final DataConflictException e) {
         return new ApiError(null, e.getMessage(), "Integrity constraint has been violated", HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(value = {
-            ForbiddenOperationException.class,
-    })
+    @ExceptionHandler(value = {DataIntegrityViolationException.class})
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiError handleDataIntegrityViolationException(final DataIntegrityViolationException e) {
+        return new ApiError(null, e.getMessage(), "Integrity constraint has been violated", HttpStatus.CONFLICT);
+    }
+
+
+    @ExceptionHandler(value = {ForbiddenOperationException.class,})
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ApiError handleForbiddenOperation(final Exception e) {
         return new ApiError(null, e.getMessage(), "The operation can't be executed", HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(value = {Exception.class,})
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ApiError handleException(final Exception e) {
+        return new ApiError((List<String>) e, e.getMessage(), "Server error", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

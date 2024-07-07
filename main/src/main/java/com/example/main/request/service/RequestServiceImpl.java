@@ -1,15 +1,12 @@
 package com.example.main.request.service;
 
-import com.example.main.category.model.Category;
 import com.example.main.category.repository.CategoryRepository;
 import com.example.main.events.dto.*;
 import com.example.main.events.mapper.EventMapper;
 import com.example.main.events.model.Event;
 import com.example.main.events.model.EventState;
-import com.example.main.events.model.ModeratorEventState;
 import com.example.main.events.repository.EventRepository;
 import com.example.main.exception.errors.DataConflictException;
-import com.example.main.exception.errors.InvalidRequestException;
 import com.example.main.exception.errors.NotFoundException;
 import com.example.main.exception.errors.ForbiddenOperationException;
 import com.example.main.request.dto.ParticipationRequestDto;
@@ -23,8 +20,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 

@@ -18,7 +18,8 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.server.MethodNotAllowedException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import java.util.List;
+import java.util.ArrayList;
+
 
 @RestControllerAdvice
 @Slf4j
@@ -101,6 +102,6 @@ public class ErrorHandler {
     @ExceptionHandler(value = {Exception.class,})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiError handleException(final Exception e) {
-        return new ApiError(null, e.getMessage(), "Server error", HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ApiError(new ArrayList<>(), e.getMessage(), "Server error", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

@@ -19,6 +19,7 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
     List<Request> getRequestsByRequesterId(int requesterId);
 
     List<Request> getRequestsByEventId(int eventId);
+
     @Query("SELECT new ru.practicum.ewm.events.dto.RequestCounterDto(r.event.id, COUNT(r.id) AS count) " +
             "FROM Request AS r WHERE r.status IS (:status) AND r.event.id IN (:idList) GROUP BY r.event")
     List<RequestCounterDto> findByStatus(@Param("idList") List<Integer> idList,

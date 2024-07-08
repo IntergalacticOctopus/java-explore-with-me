@@ -16,5 +16,6 @@ public interface RequestService {
     List<ParticipationRequestDto> getRequests(int userId);
 
     ParticipationRequestDto cancelRequest(int userId, int requestId);
+
     List<ParticipationRequestDto> getRequestsInEvent(int userId, int eventId);
 }

@@ -2,7 +2,7 @@ package ru.practicum.ewm.events.controller;
 
 import ru.practicum.ewm.client.StatClient;
 import ru.practicum.ewm.events.service.EventService;
-import ru.practicum.ewm.events.model.PublicEventParam;
+import ru.practicum.ewm.events.dto.PublicEventParamDto;
 import ru.practicum.ewm.events.dto.EventFullDto;
 import ru.practicum.ewm.events.dto.EventShortDto;
 import ru.practicum.ewm.events.model.SortConflict;
@@ -53,8 +53,8 @@ public class PublicEventController {
         if (!sort.equalsIgnoreCase(String.valueOf(SortConflict.EVENT_DATE)) && !sort.equalsIgnoreCase(String.valueOf(SortConflict.VIEWS))) {
             throw new InvalidRequestException("Invalid sorting");
         }
-        PublicEventParam publicEventParam = new PublicEventParam(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort);
-        List<EventShortDto> eventShortDtos = eventService.getShortEvents(publicEventParam, page);
+        PublicEventParamDto publicEventParamDto = new PublicEventParamDto(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort);
+        List<EventShortDto> eventShortDtos = eventService.getShortEvents(publicEventParamDto, page);
         statClient.saveHit(endpointHitDto);
         return eventShortDtos;
     }

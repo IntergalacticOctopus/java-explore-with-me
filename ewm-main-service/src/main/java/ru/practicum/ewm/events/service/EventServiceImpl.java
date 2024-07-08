@@ -8,7 +8,7 @@ import ru.practicum.ewm.events.mapper.EventMapper;
 import ru.practicum.ewm.events.model.Event;
 import ru.practicum.ewm.events.model.EventState;
 import ru.practicum.ewm.events.model.ModeratorEventState;
-import ru.practicum.ewm.events.model.PublicEventParam;
+import ru.practicum.ewm.events.dto.PublicEventParamDto;
 import ru.practicum.ewm.events.repository.EventRepository;
 import ru.practicum.ewm.user.model.User;
 import ru.practicum.ewm.exception.errors.DataConflictException;
@@ -166,16 +166,16 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<EventShortDto> getShortEvents(PublicEventParam publicEventParam,
+    public List<EventShortDto> getShortEvents(PublicEventParamDto publicEventParamDto,
                                               PageRequest page) {
 
-        String text = publicEventParam.getText();
-        List<Integer> categories = publicEventParam.getCategories();
-        Boolean paid = publicEventParam.getPaid();
-        LocalDateTime rangeStart = publicEventParam.getRangeStart();
-        LocalDateTime rangeEnd = publicEventParam.getRangeEnd();
-        Boolean onlyAvailable = publicEventParam.getOnlyAvailable();
-        String sort = publicEventParam.getSort();
+        String text = publicEventParamDto.getText();
+        List<Integer> categories = publicEventParamDto.getCategories();
+        Boolean paid = publicEventParamDto.getPaid();
+        LocalDateTime rangeStart = publicEventParamDto.getRangeStart();
+        LocalDateTime rangeEnd = publicEventParamDto.getRangeEnd();
+        Boolean onlyAvailable = publicEventParamDto.getOnlyAvailable();
+        String sort = publicEventParamDto.getSort();
 
 
         if (text.isBlank()) {
@@ -322,14 +322,14 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<EventFullDto> getFullEvents(PublicEventParam publicEventParam,
+    public List<EventFullDto> getFullEvents(PublicEventParamDto publicEventParamDto,
                                             PageRequest pageRequest) {
 
-        List<Integer> usersIds = publicEventParam.getUsersIds();
-        List<String> states = publicEventParam.getState();
-        List<Integer> categories = publicEventParam.getCategories();
-        LocalDateTime rangeStart = publicEventParam.getRangeStart();
-        LocalDateTime rangeEnd = publicEventParam.getRangeEnd();
+        List<Integer> usersIds = publicEventParamDto.getUsersIds();
+        List<String> states = publicEventParamDto.getState();
+        List<Integer> categories = publicEventParamDto.getCategories();
+        LocalDateTime rangeStart = publicEventParamDto.getRangeStart();
+        LocalDateTime rangeEnd = publicEventParamDto.getRangeEnd();
 
         List<EventState> eventStates = null;
         if (rangeStart == null) {

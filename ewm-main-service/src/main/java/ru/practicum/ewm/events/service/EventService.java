@@ -1,7 +1,7 @@
 package ru.practicum.ewm.events.service;
 
 import ru.practicum.ewm.events.dto.*;
-import ru.practicum.ewm.events.model.PublicEventParam;
+import ru.practicum.ewm.events.dto.PublicEventParamDto;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
@@ -9,9 +9,9 @@ import java.util.List;
 public interface EventService {
     EventFullDto patchEvent(UpdateEventAdminRequest updateEventAdminRequest, int eventId);
 
-    List<EventFullDto> getFullEvents(PublicEventParam publicEventParam, PageRequest pageRequest);
+    List<EventFullDto> getFullEvents(PublicEventParamDto publicEventParamDto, PageRequest pageRequest);
 
-    List<EventShortDto> getShortEvents(PublicEventParam publicEventParam, PageRequest page);
+    List<EventShortDto> getShortEvents(PublicEventParamDto publicEventParamDto, PageRequest page);
 
     EventFullDto getEventById(int id);
 

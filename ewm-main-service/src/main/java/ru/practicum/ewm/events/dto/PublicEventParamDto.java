@@ -1,4 +1,4 @@
-package ru.practicum.ewm.events.model;
+package ru.practicum.ewm.events.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,10 +7,8 @@ import lombok.RequiredArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@AllArgsConstructor
-@RequiredArgsConstructor
 @Data
-public class PublicEventParam {
+public class PublicEventParamDto {
     String text;
     List<Integer> usersIds;
     List<String> state;
@@ -21,7 +19,7 @@ public class PublicEventParam {
     Boolean onlyAvailable;
     String sort;
 
-    public PublicEventParam(String text, List<Integer> categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean onlyAvailable, String sort) {
+    public PublicEventParamDto(String text, List<Integer> categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean onlyAvailable, String sort) {
         this.text = text;
         this.categories = categories;
         this.paid = paid;
@@ -31,7 +29,7 @@ public class PublicEventParam {
         this.sort = sort;
     }
 
-    public PublicEventParam(List<Integer> users, List<String> states, List<Integer> categories, LocalDateTime rangeStart, LocalDateTime rangeEnd) {
+    public PublicEventParamDto(List<Integer> users, List<String> states, List<Integer> categories, LocalDateTime rangeStart, LocalDateTime rangeEnd) {
         this.usersIds = users;
         this.state = states;
         this.categories = categories;

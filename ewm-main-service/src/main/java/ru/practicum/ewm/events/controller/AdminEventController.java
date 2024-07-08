@@ -2,7 +2,7 @@ package ru.practicum.ewm.events.controller;
 
 import ru.practicum.ewm.events.dto.EventFullDto;
 import ru.practicum.ewm.events.dto.UpdateEventAdminRequest;
-import ru.practicum.ewm.events.model.PublicEventParam;
+import ru.practicum.ewm.events.dto.PublicEventParamDto;
 import ru.practicum.ewm.events.service.EventService;
 import ru.practicum.ewm.exception.errors.InvalidRequestException;
 import lombok.RequiredArgsConstructor;
@@ -52,7 +52,7 @@ public class AdminEventController {
                                   @RequestParam(defaultValue = "0") @PositiveOrZero int from,
                                   @RequestParam(defaultValue = "10") @Positive int size) {
         final PageRequest pageRequest = PageRequest.of(from > 0 ? from / size : 0, size);
-        PublicEventParam publicEventParam = new PublicEventParam(users, states, categories, rangeStart, rangeEnd);
-        return eventService.getFullEvents(publicEventParam, pageRequest);
+        PublicEventParamDto publicEventParamDto = new PublicEventParamDto(users, states, categories, rangeStart, rangeEnd);
+        return eventService.getFullEvents(publicEventParamDto, pageRequest);
     }
 }

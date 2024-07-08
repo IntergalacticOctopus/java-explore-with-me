@@ -1,4 +1,4 @@
-package ru.practicum.client;
+package ru.practicum.ewm.client;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -2,7 +2,7 @@ package ru.practicum.ewm.events.service;
 
 import ru.practicum.ewm.category.model.Category;
 import ru.practicum.ewm.category.repository.CategoryRepository;
-import ru.practicum.client.StatClient;
+import ru.practicum.ewm.client.StatClient;
 import ru.practicum.ewm.events.dto.*;
 import ru.practicum.ewm.events.mapper.EventMapper;
 import ru.practicum.ewm.events.model.Event;
@@ -238,7 +238,6 @@ public class EventServiceImpl implements EventService {
                 uris,
                 true
         );
-        eventFromDb.setViews(Math.toIntExact(statDto.get(0).getHits()));
 
         List<Event> events = List.of(eventFromDb);
         Map<Integer, Integer> confirmedRequests = getConfirmedRequests(events);
@@ -248,8 +247,6 @@ public class EventServiceImpl implements EventService {
                 eventFromDb,
                 confirmedRequests.getOrDefault(eventFromDb.getId(), 0),
                 viewStats.getOrDefault(eventFromDb.getId(), 0));
-
-
     }
 
     @Override

@@ -1,6 +1,6 @@
 package ru.practicum.ewm.events.controller;
 
-import ru.practicum.client.StatClient;
+import ru.practicum.ewm.client.StatClient;
 import ru.practicum.ewm.events.service.EventService;
 import ru.practicum.ewm.events.model.PublicEventParam;
 import ru.practicum.ewm.events.dto.EventFullDto;

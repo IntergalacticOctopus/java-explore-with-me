@@ -1,4 +1,4 @@
-package ru.practicum.client;
+package ru.practicum.ewm.client;
 
 import org.springframework.stereotype.Component;
 import ru.practicum.ewm.HitDto;

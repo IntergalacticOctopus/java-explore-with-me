@@ -1,6 +1,5 @@
 package ru.practicum.ewm.events.controller;
 
-
 import ru.practicum.ewm.events.dto.EventFullDto;
 import ru.practicum.ewm.events.dto.UpdateEventAdminRequest;
 import ru.practicum.ewm.events.model.PublicEventParam;

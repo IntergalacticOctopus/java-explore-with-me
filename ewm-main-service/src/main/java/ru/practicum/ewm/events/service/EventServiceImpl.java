@@ -232,12 +232,6 @@ public class EventServiceImpl implements EventService {
                         () -> new NotFoundException("Data not found")
                 );
         final List<String> uris = List.of("/events/" + id);
-        final List<StatDto> statDto = statClient.getStats(
-                LocalDateTime.now(),
-                LocalDateTime.now(),
-                uris,
-                true
-        );
 
         List<Event> events = List.of(eventFromDb);
         Map<Integer, Integer> confirmedRequests = getConfirmedRequests(events);

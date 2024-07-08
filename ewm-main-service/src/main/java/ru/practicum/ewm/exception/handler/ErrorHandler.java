@@ -24,7 +24,6 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 @RestControllerAdvice
 @Slf4j
 public class ErrorHandler {
-
     @ExceptionHandler(value = {HttpMessageNotReadableException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError handleHttpMessageNotReadableException(final HttpMessageNotReadableException e) {

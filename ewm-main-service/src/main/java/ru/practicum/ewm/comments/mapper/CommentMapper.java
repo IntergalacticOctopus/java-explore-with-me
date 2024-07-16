@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import ru.practicum.ewm.comments.dto.CommentDto;
 import ru.practicum.ewm.comments.model.Comment;
 import ru.practicum.ewm.events.model.Event;
-import ru.practicum.ewm.user.mapper.UserMapper;
 import ru.practicum.ewm.user.model.User;
 
 import java.time.LocalDateTime;

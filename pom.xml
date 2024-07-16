@@ -14,8 +14,8 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>stats</module>
-		<module>main</module>
+		<module>ewm-stats-service</module>
+		<module>ewm-main-service</module>
 	</modules>
 
 	<dependencies>
@@ -29,7 +29,7 @@
 		</dependency>
 	</dependencies>
 
-	<groupId>ru.practicum</groupId>
+	<groupId>ru.practicum.ewm</groupId>
 	<artifactId>explore-with-me</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 

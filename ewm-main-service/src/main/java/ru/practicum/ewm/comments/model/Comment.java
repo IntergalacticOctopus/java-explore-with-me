@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.util.Lazy;
 import ru.practicum.ewm.events.model.Event;
 import ru.practicum.ewm.user.model.User;
 

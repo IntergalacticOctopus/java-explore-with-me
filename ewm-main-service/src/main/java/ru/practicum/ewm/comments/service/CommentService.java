@@ -5,15 +5,15 @@ import ru.practicum.ewm.comments.dto.CommentDto;
 import java.util.List;
 
 public interface CommentService {
-    void deleteByAdmin(Integer commentId);
+    void deleteByAdmin(int commentId);
 
-    CommentDto create(Integer userId, Integer eventId, CommentDto commentDto);
+    CommentDto create(int userId, int eventId, CommentDto commentDto);
 
-    CommentDto update(Integer userId, Integer commentId, CommentDto updateText);
+    CommentDto update(int userId, int commentId, CommentDto updateText);
 
-    void deleteById(Integer userId, Integer commentId);
+    void deleteById(int userId, int commentId);
 
-    CommentDto getById(Integer commentId);
+    CommentDto getById(int commentId);
 
-    List<CommentDto> getAllByEvent(Integer eventId, Integer from, Integer size);
+    List<CommentDto> getAllByEvent(int eventId, int from, int size);
 }

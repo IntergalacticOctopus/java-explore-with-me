@@ -20,39 +20,39 @@ public class PrivateCommentController {
 
     @PostMapping("/{eventId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public CommentDto create(@PathVariable Integer userId,
-                             @PathVariable Integer eventId,
+    public CommentDto create(@PathVariable int userId,
+                             @PathVariable int eventId,
                              @RequestBody @Valid CommentDto commentDto) {
         log.info("Creating comment with userId = {}, eventId = {}, commentDto = {}", userId, eventId, commentDto);
         return commentService.create(userId, eventId, commentDto);
     }
 
     @PatchMapping("/{commentId}")
-    public CommentDto update(@PathVariable Integer userId,
-                             @PathVariable Integer commentId,
+    public CommentDto update(@PathVariable int userId,
+                             @PathVariable int commentId,
                              @RequestBody @Valid CommentDto commentDto) {
         log.info("Updating comment with userId = {}, commentId = {}, commentDto = {}", userId, commentId, commentDto);
         return commentService.update(userId, commentId, commentDto);
     }
 
     @DeleteMapping("/{commentId}")
-    public void deleteById(@PathVariable Integer userId,
-                           @PathVariable Integer commentId) {
+    public void deleteById(@PathVariable int userId,
+                           @PathVariable int commentId) {
         log.info("Deleting comment with userId = {}, commentId = {}", userId, commentId);
         commentService.deleteById(userId, commentId);
     }
 
     @GetMapping("/{commentId}")
-    public CommentDto getById(@PathVariable Integer userId,
-                              @PathVariable Integer commentId) {
+    public CommentDto getById(@PathVariable int userId,
+                              @PathVariable int commentId) {
         log.info("Getting comment with userId = {}, commentId = {}", userId, commentId);
         return commentService.getById(commentId);
     }
 
     @GetMapping
-    public List<CommentDto> getAllByEvent(@RequestParam Integer eventId,
-                                          @RequestParam(defaultValue = "0") Integer from,
-                                          @RequestParam(defaultValue = "10") Integer size) {
+    public List<CommentDto> getAllByEvent(@RequestParam int eventId,
+                                          @RequestParam(defaultValue = "0") int from,
+                                          @RequestParam(defaultValue = "10") int size) {
         log.info("Getting all comments by event with eventId= {}", eventId);
         return commentService.getAllByEvent(eventId, from, size);
     }

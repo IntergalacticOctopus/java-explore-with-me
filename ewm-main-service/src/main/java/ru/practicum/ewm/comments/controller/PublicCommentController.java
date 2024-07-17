@@ -17,9 +17,9 @@ public class PublicCommentController {
     private final CommentService commentService;
 
     @GetMapping("/{eventId}")
-    public List<CommentDto> getAllByEvent(@PathVariable Integer eventId,
-                                          @RequestParam(defaultValue = "0") Integer from,
-                                          @RequestParam(defaultValue = "10") Integer size) {
+    public List<CommentDto> getAllByEvent(@PathVariable int eventId,
+                                          @RequestParam(defaultValue = "0") int from,
+                                          @RequestParam(defaultValue = "10") int size) {
         log.info("GET /comments/{eventId} || eventId= {}", eventId);
         return commentService.getAllByEvent(eventId, from, size);
     }

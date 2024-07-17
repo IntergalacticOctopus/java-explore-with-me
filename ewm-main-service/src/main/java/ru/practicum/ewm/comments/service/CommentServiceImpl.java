@@ -37,12 +37,12 @@ public class CommentServiceImpl implements CommentService {
     private final EventRepository eventRepository;
 
     @Transactional
-    public void deleteByAdmin(Integer commentId) {
+    public void deleteByAdmin(int commentId) {
         commentRepository.deleteById(commentId);
     }
 
     @Transactional
-    public CommentDto create(Integer userId, Integer eventId, CommentDto commentDto) {
+    public CommentDto create(int userId, int eventId, CommentDto commentDto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found"));
         Event event = eventRepository.findById(eventId)
@@ -53,7 +53,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Transactional
-    public CommentDto update(Integer userId, Integer commentId, CommentDto updateText) {
+    public CommentDto update(int userId, int commentId, CommentDto updateText) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found"));
         Comment comment = getEntityById(commentId);
@@ -66,28 +66,24 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Transactional
-    public void deleteById(Integer userId, Integer commentId) {
-        List<Comment> commentList = commentRepository.getCommentByUserId(userId);
-        if (commentList.isEmpty()) {
-            throw new DataConflictException("Comments not found");
-        }
-        for (Comment comment : commentList) {
-            if (comment.getId() != commentId) {
-                throw new DataConflictException("Comment must belong to the user");
-            } else {
-                commentRepository.deleteById(commentId);
-            }
+    public void deleteById(int userId, int commentId) {
+        Comment savedComment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new NotFoundException("Comment not found"));
+        if (savedComment.getUser().getId() == userId) {
+            commentRepository.deleteById(commentId);
+        } else {
+            throw new DataConflictException("The comment does not belong to the user");
         }
     }
 
     @Override
-    public CommentDto getById(Integer commentId) {
+    public CommentDto getById(int commentId) {
         return commentMapper.toCommentDto(commentRepository.findById(commentId)
                 .orElseThrow(() -> new NotFoundException("Comment not found")));
     }
 
     @Override
-    public List<CommentDto> getAllByEvent(Integer eventId, Integer from, Integer size) {
+    public List<CommentDto> getAllByEvent(int eventId, int from, int size) {
         Pageable pageable = PageRequest.of(from / size, size);
         List<Comment> commentList = commentRepository.getByEventIdOrderByCreatedDesc(eventId, pageable);
         return commentList.stream()
@@ -95,7 +91,7 @@ public class CommentServiceImpl implements CommentService {
                 .collect(Collectors.toList());
     }
 
-    public Comment getEntityById(Integer id) {
+    private Comment getEntityById(int id) {
         return commentRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Comment not found"));
     }

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.util.Lazy;
 import ru.practicum.ewm.events.model.Event;
 import ru.practicum.ewm.user.model.User;
 
@@ -22,10 +23,10 @@ public class Comment {
     private int id;
     @Column(name = "content")
     private String text;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id")
     private Event event;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
     @Column(name = "created")

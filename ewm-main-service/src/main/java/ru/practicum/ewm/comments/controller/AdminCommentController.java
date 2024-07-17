@@ -17,7 +17,7 @@ public class AdminCommentController {
     private final CommentService commentService;
 
     @DeleteMapping("/{commentId}")
-    public void deleteByAdmin(@PathVariable Integer commentId) {
+    public void deleteByAdmin(@PathVariable int commentId) {
         log.info("Admin deleted comment with id = " + commentId);
         commentService.deleteByAdmin(commentId);
     }

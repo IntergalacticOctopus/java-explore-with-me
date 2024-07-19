@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.comments.dto.CommentDto;
+import ru.practicum.ewm.comments.dto.NewCommentDto;
 import ru.practicum.ewm.comments.mapper.CommentMapper;
 import ru.practicum.ewm.comments.model.Comment;
 import ru.practicum.ewm.comments.repository.CommentRepository;
@@ -42,18 +43,18 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Transactional
-    public CommentDto create(int userId, int eventId, CommentDto commentDto) {
+    public CommentDto create(int userId, int eventId, NewCommentDto newCommentDto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found"));
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Event not found"));
-        Comment comment = commentMapper.toComment(commentDto, user, event);
+        Comment comment = commentMapper.toComment(newCommentDto, user, event);
         comment.setCreated(LocalDateTime.now());
         return commentMapper.toCommentDto(commentRepository.save(comment));
     }
 
     @Transactional
-    public CommentDto update(int userId, int commentId, CommentDto updateText) {
+    public CommentDto update(int userId, int commentId, NewCommentDto newCommentDto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found"));
         Comment comment = getEntityById(commentId);
@@ -61,7 +62,7 @@ public class CommentServiceImpl implements CommentService {
         if (dto.getUserId() != (user.getId())) {
             throw new DataConflictException("Comment must belong to the user");
         }
-        comment.setText(updateText.getText());
+        comment.setText(newCommentDto.getText());
         return commentMapper.toCommentDto(commentRepository.save(comment));
     }
 
@@ -86,6 +87,9 @@ public class CommentServiceImpl implements CommentService {
     public List<CommentDto> getAllByEvent(int eventId, int from, int size) {
         Pageable pageable = PageRequest.of(from / size, size);
         List<Comment> commentList = commentRepository.getByEventIdOrderByCreatedDesc(eventId, pageable);
+        if (commentList.isEmpty()) {
+            throw new NotFoundException(String.format("Comment by eventId = %s not found", eventId));
+        }
         return commentList.stream()
                 .map(commentMapper::toCommentDto)
                 .collect(Collectors.toList());

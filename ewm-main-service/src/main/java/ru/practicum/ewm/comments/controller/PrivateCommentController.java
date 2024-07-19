@@ -5,10 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.comments.dto.CommentDto;
+import ru.practicum.ewm.comments.dto.NewCommentDto;
 import ru.practicum.ewm.comments.service.CommentService;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @Slf4j
@@ -22,17 +22,17 @@ public class PrivateCommentController {
     @ResponseStatus(HttpStatus.CREATED)
     public CommentDto create(@PathVariable int userId,
                              @PathVariable int eventId,
-                             @RequestBody @Valid CommentDto commentDto) {
-        log.info("Creating comment with userId = {}, eventId = {}, commentDto = {}", userId, eventId, commentDto);
-        return commentService.create(userId, eventId, commentDto);
+                             @RequestBody @Valid NewCommentDto newCommentDto) {
+        log.info("Creating comment with userId = {}, eventId = {}, newCommentDto = {}", userId, eventId, newCommentDto);
+        return commentService.create(userId, eventId, newCommentDto);
     }
 
     @PatchMapping("/{commentId}")
     public CommentDto update(@PathVariable int userId,
                              @PathVariable int commentId,
-                             @RequestBody @Valid CommentDto commentDto) {
-        log.info("Updating comment with userId = {}, commentId = {}, commentDto = {}", userId, commentId, commentDto);
-        return commentService.update(userId, commentId, commentDto);
+                             @RequestBody @Valid NewCommentDto newCommentDto) {
+        log.info("Updating comment with userId = {}, commentId = {}, newCommentDto = {}", userId, commentId, newCommentDto);
+        return commentService.update(userId, commentId, newCommentDto);
     }
 
     @DeleteMapping("/{commentId}")
@@ -47,14 +47,6 @@ public class PrivateCommentController {
                               @PathVariable int commentId) {
         log.info("Getting comment with userId = {}, commentId = {}", userId, commentId);
         return commentService.getById(commentId);
-    }
-
-    @GetMapping
-    public List<CommentDto> getAllByEvent(@RequestParam int eventId,
-                                          @RequestParam(defaultValue = "0") int from,
-                                          @RequestParam(defaultValue = "10") int size) {
-        log.info("Getting all comments by event with eventId= {}", eventId);
-        return commentService.getAllByEvent(eventId, from, size);
     }
 
 }
